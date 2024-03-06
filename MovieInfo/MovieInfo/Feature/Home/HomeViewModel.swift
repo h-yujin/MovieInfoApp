@@ -8,9 +8,10 @@
 import Foundation
 
 class HomeViewModel {
+  @Published var popularList: [Movie] = []
+  
   enum Action {
     case loadData
-    case getDataSuccess(HomeResponse)
     case getDataFailure(Error)
   }
   
@@ -19,8 +20,6 @@ class HomeViewModel {
     switch action {
     case .loadData:
       loadData()
-    case .getDataSuccess(let homeResponse):
-      return
     case .getDataFailure(let error):
       return
     }
@@ -30,9 +29,13 @@ class HomeViewModel {
 extension HomeViewModel {
   private func loadData() {
     Task {
+      do {
+        let response = try await NetworkService.shared.request(path: .popular)
+        popularList = response.results
+      } catch {
+        process(action: .getDataFailure(error))
+      }
       
-      let response = try await NetworkService.shared.request(path: .popular)
-      print(response)
     }
   }
 }

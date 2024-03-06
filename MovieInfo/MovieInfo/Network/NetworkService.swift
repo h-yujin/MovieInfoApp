@@ -31,12 +31,7 @@ public class NetworkService {
   
   
   func request(path: APIPath) async throws -> HomeResponse {
-    guard let encodedURLString = "\(baseURL)/\(path.pathString)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-          let encodedURL = URL(string: encodedURLString) else {
-      throw NetworkError.invalidURL
-    }
-    
-    let data = try await fetchData(from: URLRequest(url: encodedURL))
+    let data = try await fetchData(from: "\(baseURL)/\(path.pathString)", parameters: nil, method: nil)
     
     do {
       let decodeData = try JSONDecoder().decode(HomeResponse.self, from: data)
@@ -48,18 +43,35 @@ public class NetworkService {
 }
 
 extension NetworkService {
-  private func fetchData(from urlRequest: URLRequest) async throws -> Data {
-    var urlRequest = urlRequest
-    let header = [
+  private func fetchData(from urlString: String, 
+                         parameters: [String: String]?,
+                         method: HTTPMethod?) async throws -> Data {
+    let headers = [
       "Authorization" : "Bearer \(Keys.readAcceccToken)",
       "accept" : "application/json"
     ]
     
-    urlRequest.allHTTPHeaderFields = header
-    urlRequest.httpMethod = HTTPMethod.get.capitalizedValue
+    var urlComponents = URLComponents(string: urlString)
+
+    var queryItems = [URLQueryItem]()
+    if let parameters = parameters {
+      for (key, value) in parameters {
+          queryItems.append(URLQueryItem(name: key, value: value))
+      }
+    }
+    queryItems.append(URLQueryItem(name: "language", value: "ko-KR"))
+    queryItems.append(URLQueryItem(name: "region", value: "KR"))
     
+    urlComponents?.queryItems = queryItems
+
+    var request = URLRequest(url: (urlComponents?.url)!)
+    request.httpMethod = method?.capitalizedValue
+
+    for (key, value) in headers {
+        request.setValue(value, forHTTPHeaderField: key)
+    }
     
-    let (data, response) = try await URLSession.shared.data(for: urlRequest)
+    let (data, response) = try await URLSession.shared.data(for: request)
     if let error = NetworkError(httpResponse: response as? HTTPURLResponse) {
       throw error
     }
