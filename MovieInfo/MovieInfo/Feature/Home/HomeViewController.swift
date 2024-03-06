@@ -33,8 +33,11 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController {
   private func setupCollectionView() {
-    collectionView.register(UINib(nibName: HomePopularCell.reusableId, bundle: nil),
-                            forCellWithReuseIdentifier: HomePopularCell.reusableId)
+    collectionView.register(UINib(nibName: HomePopularCell.reuseableId, bundle: nil),
+                            forCellWithReuseIdentifier: HomePopularCell.reuseableId)
+    collectionView.register(UINib(nibName: HomeHeaderCollectionReusableView.reuseableId, bundle: nil),
+                            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                            withReuseIdentifier: HomeHeaderCollectionReusableView.reuseableId)
     
     collectionView.collectionViewLayout = setCompositionLayout()
   }
@@ -48,6 +51,21 @@ extension HomeViewController {
         return .init()
       }
     })
+
+    dataSorce.supplementaryViewProvider = { [weak self] collectiomView, kind, indexPath in
+      guard kind == UICollectionView.elementKindSectionHeader,
+            let title = self?.viewModel.popular.title else { return UICollectionReusableView.init() }
+      
+      let headerView = collectiomView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                       withReuseIdentifier: HomeHeaderCollectionReusableView.reuseableId,
+                                                                       for: indexPath) as? HomeHeaderCollectionReusableView
+      
+      headerView?.setTitle(title)
+      
+      return headerView
+
+    }
+    
   }
   
   private func setCompositionLayout() -> UICollectionViewCompositionalLayout {
@@ -62,17 +80,19 @@ extension HomeViewController {
   }
   
   private func bindViewModel() {
-    viewModel.$popularList
+    viewModel.$popular
       .receive(on: DispatchQueue.main)
       .sink { [weak self] movies in
         self?.updateData(on: movies)
       }.store(in: &cancellabels)
   }
   
-  private func updateData(on movies: [Movie]) {
+  private func updateData(on popular: (String, [Movie])) {
     var snapshot = NSDiffableDataSourceSnapshot<Section, Movie>()
     snapshot.appendSections([.popular])
-    snapshot.appendItems(movies, toSection: .popular)
+    snapshot.appendItems(popular.1, toSection: .popular)
+    
+    
     
     DispatchQueue.main.async { [weak self] in
       self?.dataSorce.apply(snapshot, animatingDifferences: true)
@@ -80,7 +100,7 @@ extension HomeViewController {
   }
   
   private func productItemCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ movie: Movie) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomePopularCell.reusableId, for: indexPath) as? HomePopularCell else { return .init() }
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomePopularCell.reuseableId, for: indexPath) as? HomePopularCell else { return .init() }
     cell.setMovie(movie, rank: indexPath.row + 1)
     return cell
   }

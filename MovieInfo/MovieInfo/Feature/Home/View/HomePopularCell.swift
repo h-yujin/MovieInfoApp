@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 class HomePopularCell: UICollectionViewCell {
-  static let reusableId: String = "HomePopularCell"
+  static let reuseableId: String = "HomePopularCell"
   
   @IBOutlet weak var posterImageView: UIImageView!
   @IBOutlet weak var numberLabel: UILabel!
@@ -40,8 +40,15 @@ extension HomePopularCell {
     
     let section = NSCollectionLayoutSection(group: group)
     section.orthogonalScrollingBehavior = .continuous
-    section.contentInsets = .init(top: 40, leading: 33, bottom: 0, trailing: 33)
+    section.contentInsets = .init(top: 10, leading: 33, bottom: 0, trailing: 33)
     section.interGroupSpacing = 10
+    
+    // 헤더
+    let headerSize: NSCollectionLayoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(30))
+    let header: NSCollectionLayoutBoundarySupplementaryItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+    section.boundarySupplementaryItems = [header]
+    
+    
     return section
   }
 }

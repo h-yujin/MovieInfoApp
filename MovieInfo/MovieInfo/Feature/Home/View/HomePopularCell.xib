@@ -19,8 +19,9 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bCw-Yi-YTu">
                         <rect key="frame" x="0.0" y="0.0" width="130" height="239"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HDJ-T2-Q7q">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HDJ-T2-Q7q">
                                 <rect key="frame" x="0.0" y="0.0" width="130" height="179"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M2b-Io-EVa">
                                 <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
@@ -34,7 +35,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aSm-9o-GNq">
-                                <rect key="frame" x="0.0" y="184" width="130" height="17"/>
+                                <rect key="frame" x="0.0" y="189" width="130" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -53,8 +54,8 @@
                             <constraint firstItem="FXx-dn-QGW" firstAttribute="leading" secondItem="bCw-Yi-YTu" secondAttribute="leading" id="FIX-79-FUg"/>
                             <constraint firstAttribute="trailing" secondItem="FXx-dn-QGW" secondAttribute="trailing" id="OEm-xx-Yn8"/>
                             <constraint firstItem="HDJ-T2-Q7q" firstAttribute="top" secondItem="bCw-Yi-YTu" secondAttribute="top" id="TNN-dS-bTc"/>
-                            <constraint firstItem="aSm-9o-GNq" firstAttribute="top" secondItem="HDJ-T2-Q7q" secondAttribute="bottom" constant="5" id="WOU-YO-AC0"/>
-                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="aSm-9o-GNq" secondAttribute="bottom" id="ayH-CW-aZp"/>
+                            <constraint firstItem="aSm-9o-GNq" firstAttribute="top" secondItem="HDJ-T2-Q7q" secondAttribute="bottom" constant="10" id="WOU-YO-AC0"/>
+                            <constraint firstItem="FXx-dn-QGW" firstAttribute="top" relation="greaterThanOrEqual" secondItem="aSm-9o-GNq" secondAttribute="bottom" constant="5" id="ayH-CW-aZp"/>
                             <constraint firstItem="M2b-Io-EVa" firstAttribute="leading" secondItem="bCw-Yi-YTu" secondAttribute="leading" id="jZ5-sq-yk1"/>
                             <constraint firstItem="M2b-Io-EVa" firstAttribute="top" secondItem="bCw-Yi-YTu" secondAttribute="top" id="neN-DB-FFZ"/>
                             <constraint firstItem="aSm-9o-GNq" firstAttribute="leading" secondItem="bCw-Yi-YTu" secondAttribute="leading" id="rTg-Uc-Ilc"/>
@@ -65,7 +66,6 @@
                     </view>
                 </subviews>
             </view>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="bCw-Yi-YTu" firstAttribute="top" secondItem="4XC-hs-EN0" secondAttribute="top" id="BDu-FZ-Xok"/>
                 <constraint firstItem="bCw-Yi-YTu" firstAttribute="leading" secondItem="4XC-hs-EN0" secondAttribute="leading" id="CCS-ok-ZaJ"/>

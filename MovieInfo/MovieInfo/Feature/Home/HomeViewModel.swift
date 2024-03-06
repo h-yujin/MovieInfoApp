@@ -8,7 +8,7 @@
 import Foundation
 
 class HomeViewModel {
-  @Published var popularList: [Movie] = []
+  @Published var popular: (title: String , itms: [Movie]) = ("", [])
   
   enum Action {
     case loadData
@@ -31,7 +31,7 @@ extension HomeViewModel {
     Task {
       do {
         let response = try await NetworkService.shared.request(path: .popular)
-        popularList = response.results
+        popular = ("인기순", response.results)
       } catch {
         process(action: .getDataFailure(error))
       }
