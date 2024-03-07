@@ -31,8 +31,8 @@ public class NetworkService {
   
   
   func request(path: APIPath) async throws -> HomeResponse {
-    let data = try await fetchData(from: "\(baseURL)/\(path.pathString)", parameters: nil, method: nil)
-    
+    let data = try await fetchData(from: "\(baseURL)/", parameters: nil, method: nil)
+//    let data = try await fetchData(from: "\(baseURL)/\(path.pathString)", parameters: nil, method: nil)
     do {
       let decodeData = try JSONDecoder().decode(HomeResponse.self, from: data)
       return decodeData
@@ -79,25 +79,3 @@ extension NetworkService {
     return data
   }
 }
-
-//extension NetworkService {
-//  private func handleResponseData(with data: Data?) -> Result<ResponseType, Error> {
-//    guard let data = data else {
-//      return .failure(NetworkError.badResponse)
-//    }
-//
-//    do {
-//      let deserializedData = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
-//
-//      if let jsonDic = deserializedData as? [String: Any] {
-//        return .success(.jsonDic(dic: jsonDic))
-//      } else if let jsonArray = deserializedData as? [Any] {
-//        return .success(.jsonArray(array: jsonArray))
-//      } else {
-//        return .failure(NetworkError.invalidFormat)
-//      }
-//    } catch {
-//      return .failure(NetworkError.invalidJSON)
-//    }
-//  }
-//}

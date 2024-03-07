@@ -12,7 +12,7 @@ class LoadingIndicator {
   static let shared = LoadingIndicator()
   
   private var indicator: UIActivityIndicatorView
-  private var view: UIView?
+  private var rootView: UIView?
   
   private init() {
     self.indicator = UIActivityIndicatorView(style: .large)
@@ -23,8 +23,8 @@ class LoadingIndicator {
   }
   
   func start(on view: UIView?) {
-    self.view = view
-    self.view?.addSubview(self.indicator)
+    self.rootView = view
+    self.rootView?.addSubview(self.indicator)
     DispatchQueue.main.async {
       self.indicator.startAnimating()
     }
@@ -33,8 +33,8 @@ class LoadingIndicator {
   func stop() {
     DispatchQueue.main.async {
       self.indicator.stopAnimating()
-      self.view?.subviews.forEach({ view in
-        if view == self.view {
+      self.rootView?.subviews.forEach({ view in
+        if view == self.rootView {
           view.removeFromSuperview()
         }
       })

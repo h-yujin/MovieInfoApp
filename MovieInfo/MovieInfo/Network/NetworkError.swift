@@ -14,6 +14,19 @@ public enum NetworkError: Error {
   case responesError
   case decodeError
   case unowneError
+  
+  var errorString: String {
+    switch self {
+    case .invalidURL,
+        .badResponse,
+        .requestError,
+        .responesError,
+        .decodeError:
+      "네트워크에 문제가 발생했습니다!\n잠시 후 다시 시도해주세요."
+    case .unowneError:
+      "알 수 없는 오류가 발생했습니다."
+    }
+  }
 }
 
 extension NetworkError {

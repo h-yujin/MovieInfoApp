@@ -59,7 +59,7 @@ extension HomeViewController {
         return .init()
       }
     })
-
+    
     dataSorce.supplementaryViewProvider = { [weak self] collectiomView, kind, indexPath in
       guard kind == UICollectionView.elementKindSectionHeader,
             let title = self?.viewModel.homeViewModels.popular?.title else { return UICollectionReusableView.init() }
@@ -71,7 +71,7 @@ extension HomeViewController {
       headerView?.setTitle(title)
       
       return headerView
-
+      
     }
     
   }
@@ -101,19 +101,20 @@ extension HomeViewController {
         case .success:
           LoadingIndicator.shared.stop()
         case .fail(let error):
-          print("fail")
           LoadingIndicator.shared.stop()
+          if let networkError = error as? NetworkError {
+            _ = ErrorView(on: self?.view, errorText: networkError.errorString)
+          }
         case .none: break
         }
       }.store(in: &cancellabels)
     
-
+    
     viewModel.$homeViewModels
       .receive(on: DispatchQueue.main)
       .sink { [weak self] _ in
         self?.updateData()
       }.store(in: &cancellabels)
-    
   }
   
   private func updateData() {
@@ -129,10 +130,7 @@ extension HomeViewController {
       snapshot.appendItems(banner)
     }
     
-    
-    DispatchQueue.main.async { [weak self] in
-      self?.dataSorce.apply(snapshot, animatingDifferences: true)
-    }
+    dataSorce.apply(snapshot)
     
   }
   
@@ -140,17 +138,17 @@ extension HomeViewController {
                                _ indexPath: IndexPath,
                                _ movie: AnyHashable) -> UICollectionViewCell {
     guard let movie = movie as? Movie,
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomePopularCell.reuseableId, for: indexPath) as? HomePopularCell else { return .init() }
+          let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomePopularCell.reuseableId, for: indexPath) as? HomePopularCell else { return .init() }
     cell.setMovie(movie, rank: indexPath.row + 1)
     return cell
   }
   
-  private func bannerItemCell(_ collectionView: UICollectionView, 
+  private func bannerItemCell(_ collectionView: UICollectionView,
                               _ indexPath: IndexPath,
                               _ imagePath: AnyHashable) -> UICollectionViewCell {
     guard let imagePath = imagePath as? String,
           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeBannerCollectionViewCell.reuseableId, for: indexPath) as? HomeBannerCollectionViewCell else { return .init() }
-
+    
     cell.setImagePath(imagePath)
     return cell
   }

@@ -36,24 +36,28 @@ class HomeViewModel {
 
 extension HomeViewModel {
   private func loadData() {
-    loadDataTask = Task {
-      do {
-        let response = try await NetworkService.shared.request(path: .popular)
-        homeViewModels.popular = ("인기순", response.results)
-        phase = .success
-      } catch {
-        phase = .fail(error: error)
-      }
-      
-      homeViewModels.banner = [
-        "https://picsum.photos/id/1/500/500",
-        "https://picsum.photos/id/2/500/500",
-        "https://picsum.photos/id/3/500/500",
-        "https://picsum.photos/id/4/500/500",
-        "https://picsum.photos/id/5/500/500"
-      ]
+    Task { await popularAPI() }
+  }
+  
+  private func popularAPI() async {
+    do {
+      let response = try await NetworkService.shared.request(path: .popular)
+      homeViewModels.popular = ("인기순", response.results)
+      Task { await addBanner() }
+    } catch {
+      phase = .fail(error: error)
     }
+  }
+  
+  private func addBanner() async {
+    homeViewModels.banner = [
+      "https://picsum.photos/id/1/500/500",
+      "https://picsum.photos/id/2/500/500",
+      "https://picsum.photos/id/3/500/500",
+      "https://picsum.photos/id/4/500/500",
+      "https://picsum.photos/id/5/500/500"
+    ]
     
-    
+    phase = .success
   }
 }
