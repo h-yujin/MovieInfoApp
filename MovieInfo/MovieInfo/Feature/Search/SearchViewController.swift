@@ -16,6 +16,9 @@ class SearchViewController: UIViewController {
   
   private var viewModel = SearchViewModel()
   private var cancellabels: Set<AnyCancellable> = []
+  var publisher: Just<String>?
+  
+  @Published var searchText: String = ""
   
   private enum Section: Int {
     case search
@@ -27,7 +30,6 @@ class SearchViewController: UIViewController {
     setupTableView()
     setDataSource()
     bindViewModel()
-
   }
 }
 
@@ -78,6 +80,12 @@ extension SearchViewController {
       .sink { [weak self] _ in
         self?.updateData()
       }.store(in: &cancellabels)
+    
+    $searchText
+      .debounce(for: .seconds(0.2), scheduler: DispatchQueue.main)
+      .sink { [weak self] text in
+        self?.viewModel.process(action: .searchData(keyword: text))
+      }.store(in: &cancellabels)
   }
   
   
@@ -105,7 +113,7 @@ extension SearchViewController {
 
 extension SearchViewController: UISearchBarDelegate {
   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    viewModel.process(action: .searchData(keyword: searchText))
+    self.searchText = searchText
   }
   
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
