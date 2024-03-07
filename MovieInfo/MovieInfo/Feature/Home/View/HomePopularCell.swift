@@ -40,7 +40,7 @@ extension HomePopularCell {
     
     let section = NSCollectionLayoutSection(group: group)
     section.orthogonalScrollingBehavior = .continuous
-    section.contentInsets = .init(top: 10, leading: 33, bottom: 0, trailing: 33)
+    section.contentInsets = .init(top: 10, leading: 20, bottom: 0, trailing: 20)
     section.interGroupSpacing = 10
     
     // 헤더

@@ -11,7 +11,7 @@ import Combine
 class HomeViewController: UIViewController {
   @IBOutlet weak var collectionView: UICollectionView!
   
-  var dataSorce: UICollectionViewDiffableDataSource<Section, Movie>!
+  var dataSorce: UICollectionViewDiffableDataSource<Section, AnyHashable>!
   
   
   private var viewModel: HomeViewModel = HomeViewModel()
@@ -19,11 +19,12 @@ class HomeViewController: UIViewController {
   
   enum Section: Int {
     case popular
+    case banner
   }
-  
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    setupLeftBarButtonItem()
     setupCollectionView()
     setDataSource()
     bindViewModel()
@@ -32,21 +33,29 @@ class HomeViewController: UIViewController {
 }
 
 extension HomeViewController {
+  private func setupLeftBarButtonItem() {
+    navigationItem.leftBarButtonItem = UIImage(named: "movie_icon")?.createBarButtonItem()
+  }
+  
   private func setupCollectionView() {
     collectionView.register(UINib(nibName: HomePopularCell.reuseableId, bundle: nil),
                             forCellWithReuseIdentifier: HomePopularCell.reuseableId)
     collectionView.register(UINib(nibName: HomeHeaderCollectionReusableView.reuseableId, bundle: nil),
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                             withReuseIdentifier: HomeHeaderCollectionReusableView.reuseableId)
+    collectionView.register(UINib(nibName: HomeBannerCollectionViewCell.reuseableId, bundle: nil),
+                            forCellWithReuseIdentifier: HomeBannerCollectionViewCell.reuseableId)
     
     collectionView.collectionViewLayout = setCompositionLayout()
   }
   
   private func setDataSource() {
-    dataSorce = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, movie in
+    dataSorce = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
       switch Section(rawValue: indexPath.section) {
       case .popular:
-        return self.productItemCell(collectionView, indexPath, movie)
+        return self.productItemCell(collectionView, indexPath, item)
+      case .banner:
+        return self.bannerItemCell(collectionView, indexPath, item)
       case .none:
         return .init()
       }
@@ -54,7 +63,7 @@ extension HomeViewController {
 
     dataSorce.supplementaryViewProvider = { [weak self] collectiomView, kind, indexPath in
       guard kind == UICollectionView.elementKindSectionHeader,
-            let title = self?.viewModel.popular.title else { return UICollectionReusableView.init() }
+            let title = self?.viewModel.homeViewModels.popular?.title else { return UICollectionReusableView.init() }
       
       let headerView = collectiomView.dequeueReusableSupplementaryView(ofKind: kind,
                                                                        withReuseIdentifier: HomeHeaderCollectionReusableView.reuseableId,
@@ -73,6 +82,8 @@ extension HomeViewController {
       switch Section(rawValue: section) {
       case .popular:
         return HomePopularCell.homePopularLayout()
+      case .banner:
+        return HomeBannerCollectionViewCell.bannerLayout()
       case .none: return nil
       }
     }
@@ -80,28 +91,50 @@ extension HomeViewController {
   }
   
   private func bindViewModel() {
-    viewModel.$popular
+    viewModel.$homeViewModels
       .receive(on: DispatchQueue.main)
-      .sink { [weak self] movies in
-        self?.updateData(on: movies)
+      .sink { [weak self] _ in
+        self?.updateData()
       }.store(in: &cancellabels)
+    
   }
   
-  private func updateData(on popular: (String, [Movie])) {
-    var snapshot = NSDiffableDataSourceSnapshot<Section, Movie>()
-    snapshot.appendSections([.popular])
-    snapshot.appendItems(popular.1, toSection: .popular)
+  private func updateData() {
+    var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
     
+    if let popular = viewModel.homeViewModels.popular {
+      snapshot.appendSections([.popular])
+      snapshot.appendItems(popular.1, toSection: .popular)
+    }
+    
+    if let banner = viewModel.homeViewModels.banner {
+      snapshot.appendSections([.banner])
+      snapshot.appendItems(banner)
+    }
     
     
     DispatchQueue.main.async { [weak self] in
       self?.dataSorce.apply(snapshot, animatingDifferences: true)
     }
+    
   }
   
-  private func productItemCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ movie: Movie) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomePopularCell.reuseableId, for: indexPath) as? HomePopularCell else { return .init() }
+  private func productItemCell(_ collectionView: UICollectionView,
+                               _ indexPath: IndexPath,
+                               _ movie: AnyHashable) -> UICollectionViewCell {
+    guard let movie = movie as? Movie,
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomePopularCell.reuseableId, for: indexPath) as? HomePopularCell else { return .init() }
     cell.setMovie(movie, rank: indexPath.row + 1)
+    return cell
+  }
+  
+  private func bannerItemCell(_ collectionView: UICollectionView, 
+                              _ indexPath: IndexPath,
+                              _ imagePath: AnyHashable) -> UICollectionViewCell {
+    guard let imagePath = imagePath as? String,
+          let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeBannerCollectionViewCell.reuseableId, for: indexPath) as? HomeBannerCollectionViewCell else { return .init() }
+
+    cell.setImagePath(imagePath)
     return cell
   }
 }

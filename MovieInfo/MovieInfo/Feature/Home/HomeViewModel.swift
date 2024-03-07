@@ -8,13 +8,18 @@
 import Foundation
 
 class HomeViewModel {
-  @Published var popular: (title: String , itms: [Movie]) = ("", [])
+  struct HomeViewModels {
+    var popular: (title: String , itms: [Movie])?
+    var banner: [String]?
+  }
   
   enum Action {
     case loadData
     case getDataFailure(Error)
   }
   
+  @Published var homeViewModels = HomeViewModels()
+  private var loadDataTask: Task<Void, Never>?
   
   func process(action: Action) {
     switch action {
@@ -24,18 +29,31 @@ class HomeViewModel {
       return
     }
   }
+  
+  deinit {
+    loadDataTask?.cancel()
+  }
 }
 
 extension HomeViewModel {
   private func loadData() {
-    Task {
+    loadDataTask = Task {
       do {
         let response = try await NetworkService.shared.request(path: .popular)
-        popular = ("인기순", response.results)
+        homeViewModels.popular = ("인기순", response.results)
       } catch {
         process(action: .getDataFailure(error))
       }
       
+      homeViewModels.banner = [
+        "https://picsum.photos/id/1/500/500",
+        "https://picsum.photos/id/2/500/500",
+        "https://picsum.photos/id/3/500/500",
+        "https://picsum.photos/id/4/500/500",
+        "https://picsum.photos/id/5/500/500"
+      ]
     }
+    
+    
   }
 }
