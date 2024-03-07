@@ -15,18 +15,17 @@ class HomeViewModel {
   
   enum Action {
     case loadData
-    case getDataFailure(Error)
   }
   
+  @Published var phase: Phase = .notRequested
   @Published var homeViewModels = HomeViewModels()
   private var loadDataTask: Task<Void, Never>?
   
   func process(action: Action) {
     switch action {
     case .loadData:
+      phase = .loading
       loadData()
-    case .getDataFailure(let error):
-      return
     }
   }
   
@@ -41,8 +40,9 @@ extension HomeViewModel {
       do {
         let response = try await NetworkService.shared.request(path: .popular)
         homeViewModels.popular = ("인기순", response.results)
+        phase = .success
       } catch {
-        process(action: .getDataFailure(error))
+        phase = .fail(error: error)
       }
       
       homeViewModels.banner = [

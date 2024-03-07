@@ -28,7 +28,6 @@ class HomeViewController: UIViewController {
     setupCollectionView()
     setDataSource()
     bindViewModel()
-    viewModel.process(action: .loadData)
   }
 }
 
@@ -91,6 +90,24 @@ extension HomeViewController {
   }
   
   private func bindViewModel() {
+    viewModel.$phase
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] phase in
+        switch self?.viewModel.phase {
+        case .notRequested:
+          self?.viewModel.process(action: .loadData)
+        case .loading:
+          LoadingIndicator.shared.start(on: self?.view)
+        case .success:
+          LoadingIndicator.shared.stop()
+        case .fail(let error):
+          print("fail")
+          LoadingIndicator.shared.stop()
+        case .none: break
+        }
+      }.store(in: &cancellabels)
+    
+
     viewModel.$homeViewModels
       .receive(on: DispatchQueue.main)
       .sink { [weak self] _ in
