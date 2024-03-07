@@ -34,6 +34,7 @@ class ErrorView: UIView {
   
   convenience init(on view: UIView?, errorText: String) {
     self.init(frame: view?.frame ?? .zero)
+    view?.backgroundColor = .white
     rootView = view
     errorLabel.text = errorText
     commonInit()

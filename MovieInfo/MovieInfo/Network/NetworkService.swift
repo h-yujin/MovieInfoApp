@@ -9,17 +9,27 @@ import Foundation
 
 public enum APIPath {
   case popular
+  case topRate
+  case upcoming
   
   var pathString: String {
     switch self {
     case .popular:
       return "popular"
+    case .topRate:
+      return "top_rated"
+    case .upcoming:
+      return "upcoming"
     }
   }
   
   var parameters: [String: String]? {
     switch self {
     case .popular:
+      return nil
+    case .topRate:
+      return nil
+    case .upcoming:
       return nil
     }
   }  
@@ -31,8 +41,8 @@ public class NetworkService {
   
   
   func request(path: APIPath) async throws -> HomeResponse {
-    let data = try await fetchData(from: "\(baseURL)/", parameters: nil, method: nil)
-//    let data = try await fetchData(from: "\(baseURL)/\(path.pathString)", parameters: nil, method: nil)
+    let data = try await fetchData(from: "\(baseURL)/\(path.pathString)", parameters: nil, method: nil)
+    
     do {
       let decodeData = try JSONDecoder().decode(HomeResponse.self, from: data)
       return decodeData

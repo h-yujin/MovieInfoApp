@@ -11,6 +11,8 @@ class HomeViewModel {
   struct HomeViewModels {
     var popular: (title: String , itms: [Movie])?
     var banner: [String]?
+    var topRate: (title: String , itms: [Movie])?
+    var upcoming: (title: String , itms: [Movie])?
   }
   
   enum Action {
@@ -42,7 +44,7 @@ extension HomeViewModel {
   private func popularAPI() async {
     do {
       let response = try await NetworkService.shared.request(path: .popular)
-      homeViewModels.popular = ("인기순", response.results)
+      homeViewModels.popular = ("인기 영화", response.results)
       Task { await addBanner() }
     } catch {
       phase = .fail(error: error)
@@ -58,6 +60,27 @@ extension HomeViewModel {
       "https://picsum.photos/id/5/500/500"
     ]
     
-    phase = .success
+    Task { await topRateAPI() }
+  }
+  
+  private func topRateAPI() async {
+    do {
+      let response = try await NetworkService.shared.request(path: .topRate)
+      homeViewModels.topRate = ("최고 평점 영화", response.results)
+      Task { await upcomingAPI() }
+    } catch {
+      phase = .fail(error: error)
+    }
+  }
+  
+  private func upcomingAPI() async {
+    do {
+      let response = try await NetworkService.shared.request(path: .upcoming)
+      homeViewModels.upcoming = ("개봉 예정!", response.results)
+      
+      phase = .success
+    } catch {
+      phase = .fail(error: error)
+    }
   }
 }

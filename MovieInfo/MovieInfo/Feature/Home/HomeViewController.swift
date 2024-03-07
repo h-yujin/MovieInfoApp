@@ -20,6 +20,8 @@ class HomeViewController: UIViewController {
   enum Section: Int {
     case popular
     case banner
+    case topRate
+    case upcoming
   }
   
   override func viewDidLoad() {
@@ -51,7 +53,7 @@ extension HomeViewController {
   private func setDataSource() {
     dataSorce = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
       switch Section(rawValue: indexPath.section) {
-      case .popular:
+      case .popular, .topRate, .upcoming:
         return self.productItemCell(collectionView, indexPath, item)
       case .banner:
         return self.bannerItemCell(collectionView, indexPath, item)
@@ -61,12 +63,22 @@ extension HomeViewController {
     })
     
     dataSorce.supplementaryViewProvider = { [weak self] collectiomView, kind, indexPath in
-      guard kind == UICollectionView.elementKindSectionHeader,
-            let title = self?.viewModel.homeViewModels.popular?.title else { return UICollectionReusableView.init() }
+      guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView.init() }
       
       let headerView = collectiomView.dequeueReusableSupplementaryView(ofKind: kind,
                                                                        withReuseIdentifier: HomeHeaderCollectionReusableView.reuseableId,
                                                                        for: indexPath) as? HomeHeaderCollectionReusableView
+      
+      var title = ""
+      switch Section(rawValue: indexPath.section) {
+      case .popular:
+        title = self?.viewModel.homeViewModels.popular?.title ?? ""
+      case .topRate:
+        title = self?.viewModel.homeViewModels.topRate?.title ?? ""
+      case .upcoming:
+        title = self?.viewModel.homeViewModels.upcoming?.title ?? ""
+      default: break
+      }
       
       headerView?.setTitle(title)
       
@@ -79,7 +91,7 @@ extension HomeViewController {
   private func setCompositionLayout() -> UICollectionViewCompositionalLayout {
     UICollectionViewCompositionalLayout { section, _ in
       switch Section(rawValue: section) {
-      case .popular:
+      case .popular, .topRate, .upcoming:
         return HomePopularCell.homePopularLayout()
       case .banner:
         return HomeBannerCollectionViewCell.bannerLayout()
@@ -128,6 +140,16 @@ extension HomeViewController {
     if let banner = viewModel.homeViewModels.banner {
       snapshot.appendSections([.banner])
       snapshot.appendItems(banner)
+    }
+    
+    if let topRate = viewModel.homeViewModels.topRate {
+      snapshot.appendSections([.topRate])
+      snapshot.appendItems(topRate.1, toSection: .topRate)
+    }
+    
+    if let upcoming = viewModel.homeViewModels.upcoming {
+      snapshot.appendSections([.upcoming])
+      snapshot.appendItems(upcoming.1, toSection: .upcoming)
     }
     
     dataSorce.apply(snapshot)
