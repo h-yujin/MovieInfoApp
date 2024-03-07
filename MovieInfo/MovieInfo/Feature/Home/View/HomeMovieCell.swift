@@ -26,7 +26,7 @@ class HomeMovieCell: UICollectionViewCell {
     posterImageView.kf.setImage(with: URL(string: movie.thumbnailImagePath))
     numberLabel.text = "\(rank)"
     titleLabel.text = movie.title
-    dateLabel.text = movie.release_date.toReleaseDate?.toReleaseDateString ?? "-"
+    dateLabel.text = movie.release_date?.toReleaseDate?.toReleaseDateString ?? "-"
   }
 }
 

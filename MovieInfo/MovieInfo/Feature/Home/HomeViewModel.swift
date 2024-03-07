@@ -43,7 +43,7 @@ extension HomeViewModel {
   
   private func popularAPI() async {
     do {
-      let response = try await NetworkService.shared.request(path: .popular)
+      let response = try await NetworkService.shared.getHomeData(path: .popular)
       homeViewModels.popular = ("인기 영화", response.results)
       Task { await addBanner() }
     } catch {
@@ -65,9 +65,10 @@ extension HomeViewModel {
   
   private func topRateAPI() async {
     do {
-      let response = try await NetworkService.shared.request(path: .topRate)
+      let response = try await NetworkService.shared.getHomeData(path: .topRate)
       homeViewModels.topRate = ("최고 평점 영화", response.results)
       Task { await upcomingAPI() }
+      phase = .success
     } catch {
       phase = .fail(error: error)
     }
@@ -75,7 +76,7 @@ extension HomeViewModel {
   
   private func upcomingAPI() async {
     do {
-      let response = try await NetworkService.shared.request(path: .upcoming)
+      let response = try await NetworkService.shared.getHomeData(path: .upcoming)
       homeViewModels.upcoming = ("개봉 예정!", response.results)
       
       phase = .success

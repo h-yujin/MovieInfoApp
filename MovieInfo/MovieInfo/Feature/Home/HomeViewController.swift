@@ -11,10 +11,9 @@ import Combine
 class HomeViewController: UIViewController {
   @IBOutlet weak var collectionView: UICollectionView!
   
-  var dataSorce: UICollectionViewDiffableDataSource<Section, AnyHashable>!
+  private var dataSorce: UICollectionViewDiffableDataSource<Section, AnyHashable>!
   
-  
-  private var viewModel: HomeViewModel = HomeViewModel()
+  private var viewModel = HomeViewModel()
   private var cancellabels: Set<AnyCancellable> = []
   
   enum Section: Int {
@@ -31,6 +30,14 @@ class HomeViewController: UIViewController {
     setDataSource()
     bindViewModel()
   }
+  
+  @IBAction func searchButton(_ sender: Any) {
+    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    if let searchViewController = storyboard.instantiateViewController(withIdentifier: "SearchViewController") as? SearchViewController {
+      navigationController?.pushViewController(searchViewController, animated: true)
+    }
+  }
+  
 }
 
 extension HomeViewController {
@@ -48,6 +55,7 @@ extension HomeViewController {
                             forCellWithReuseIdentifier: HomeBannerCollectionViewCell.reuseableId)
     
     collectionView.collectionViewLayout = setCompositionLayout()
+    collectionView.delegate = self
   }
   
   private func setDataSource() {
@@ -161,7 +169,7 @@ extension HomeViewController {
                                _ movie: AnyHashable) -> UICollectionViewCell {
     guard let movie = movie as? Movie,
           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeMovieCell.reuseableId, for: indexPath) as? HomeMovieCell else { return .init() }
-    cell.setMovie(movie, rank: indexPath.row + 1)
+    cell.setMovie(movie, rank: indexPath.item + 1)
     return cell
   }
   
@@ -176,3 +184,18 @@ extension HomeViewController {
   }
 }
 
+extension HomeViewController: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    switch Section(rawValue: indexPath.section) {
+    case .banner:
+      break
+    case .popular:
+      break
+    case .topRate:
+      break
+    case .upcoming:
+      break
+    default: break
+    }
+  }
+}

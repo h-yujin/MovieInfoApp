@@ -11,15 +11,18 @@ public enum APIPath {
   case popular
   case topRate
   case upcoming
+  case search
   
   var pathString: String {
     switch self {
     case .popular:
-      return "popular"
+      return "movie/popular"
     case .topRate:
-      return "top_rated"
+      return "movie/top_rated"
     case .upcoming:
-      return "upcoming"
+      return "movie/upcoming"
+    case .search:
+      return "search/movie"
     }
   }
   
@@ -31,31 +34,44 @@ public enum APIPath {
       return nil
     case .upcoming:
       return nil
+    case .search:
+      return nil
     }
   }  
 }
 
 public class NetworkService {
   static let shared: NetworkService = NetworkService()
-  private let baseURL = "https://api.themoviedb.org/3/movie"
+  private let baseURL = "https://api.themoviedb.org/3/"
   
   
-  func request(path: APIPath) async throws -> HomeResponse {
-    let data = try await fetchData(from: "\(baseURL)/\(path.pathString)", parameters: nil, method: nil)
-    
+  
+  func getHomeData(path: APIPath) async throws -> HomeResponse {
+    let data = try await fetchData(from: "\(baseURL)/\(path.pathString)", parameters: nil)
     do {
-      let decodeData = try JSONDecoder().decode(HomeResponse.self, from: data)
-      return decodeData
+      return try JSONDecoder().decode(HomeResponse.self, from: data)
     } catch {
       throw NetworkError.decodeError
     }
   }
+  
+  func getSearchData(path: APIPath, parameters: [String: String]? = nil) async throws -> SearchResponse {
+    
+    let data = try await fetchData(from: "\(baseURL)/\(path.pathString)", parameters: parameters)
+    
+    do {
+      return try JSONDecoder().decode(SearchResponse.self, from: data)
+    } catch let error {
+      throw NetworkError.decodeError
+    }
+  }
+  
 }
 
 extension NetworkService {
   private func fetchData(from urlString: String, 
                          parameters: [String: String]?,
-                         method: HTTPMethod?) async throws -> Data {
+                         method: HTTPMethod? = .get) async throws -> Data {
     let headers = [
       "Authorization" : "Bearer \(Keys.readAcceccToken)",
       "accept" : "application/json"
