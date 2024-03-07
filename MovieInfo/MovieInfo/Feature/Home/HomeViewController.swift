@@ -39,8 +39,8 @@ extension HomeViewController {
   }
   
   private func setupCollectionView() {
-    collectionView.register(UINib(nibName: HomePopularCell.reuseableId, bundle: nil),
-                            forCellWithReuseIdentifier: HomePopularCell.reuseableId)
+    collectionView.register(UINib(nibName: HomeMovieCell.reuseableId, bundle: nil),
+                            forCellWithReuseIdentifier: HomeMovieCell.reuseableId)
     collectionView.register(UINib(nibName: HomeHeaderCollectionReusableView.reuseableId, bundle: nil),
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                             withReuseIdentifier: HomeHeaderCollectionReusableView.reuseableId)
@@ -92,7 +92,7 @@ extension HomeViewController {
     UICollectionViewCompositionalLayout { section, _ in
       switch Section(rawValue: section) {
       case .popular, .topRate, .upcoming:
-        return HomePopularCell.homePopularLayout()
+        return HomeMovieCell.homePopularLayout()
       case .banner:
         return HomeBannerCollectionViewCell.bannerLayout()
       case .none: return nil
@@ -160,7 +160,7 @@ extension HomeViewController {
                                _ indexPath: IndexPath,
                                _ movie: AnyHashable) -> UICollectionViewCell {
     guard let movie = movie as? Movie,
-          let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomePopularCell.reuseableId, for: indexPath) as? HomePopularCell else { return .init() }
+          let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeMovieCell.reuseableId, for: indexPath) as? HomeMovieCell else { return .init() }
     cell.setMovie(movie, rank: indexPath.row + 1)
     return cell
   }

@@ -1,5 +1,5 @@
 //
-//  HomePopularCell.swift
+//  HomeMovieCell.swift
 //  MovieInfo
 //
 //  Created by Hong yujin on 3/6/24.
@@ -8,8 +8,8 @@
 import UIKit
 import Kingfisher
 
-class HomePopularCell: UICollectionViewCell {
-  static let reuseableId: String = "HomePopularCell"
+class HomeMovieCell: UICollectionViewCell {
+  static let reuseableId: String = "HomeMovieCell"
   
   @IBOutlet weak var posterImageView: UIImageView!
   @IBOutlet weak var numberLabel: UILabel!
@@ -30,7 +30,7 @@ class HomePopularCell: UICollectionViewCell {
   }
 }
 
-extension HomePopularCell {
+extension HomeMovieCell {
   static func homePopularLayout() -> NSCollectionLayoutSection {
     let itemSize: NSCollectionLayoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
     let item: NSCollectionLayoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
