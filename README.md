@@ -23,4 +23,5 @@ TMDB에서 제공하는 API를 활용해 영화 관련 정보를 가져오는 �
 https://github.com/h-yujin/MovieInfoApp/assets/60815411/230c809e-6764-4c97-bf95-34eb66d356e6
 - MVVM을 통해 View와 ViewModel의 역할을 명확하게 나눠주니 확실히 ViewController의 역할이 명확해졌다.
 - View와 ViewModel의 DataBinding이 되어 있으니, 따로 reloadData를 해주지 않아도 알아서 업데이트가 되어 있으니 편했다.
+- Combine의 debounce을 통해 검색 결과 API의 잦은 호출을 막아줬다.
 
