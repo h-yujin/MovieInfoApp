@@ -25,7 +25,7 @@ class HomeViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    setupLeftBarButtonItem()
+    setUpNavigationBar()
     setupCollectionView()
     setDataSource()
     bindViewModel()
@@ -41,8 +41,9 @@ class HomeViewController: UIViewController {
 }
 
 extension HomeViewController {
-  private func setupLeftBarButtonItem() {
+  private func setUpNavigationBar() {
     navigationItem.leftBarButtonItem = UIImage(named: "movie_icon")?.createBarButtonItem()
+    navigationController?.hidesBarsOnSwipe = true
   }
   
   private func setupCollectionView() {
