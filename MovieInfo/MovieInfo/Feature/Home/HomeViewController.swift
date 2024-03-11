@@ -30,6 +30,16 @@ class HomeViewController: UIViewController {
     setDataSource()
     bindViewModel()
   }
+    
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    navigationController?.hidesBarsOnSwipe = true
+  }
+    
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    navigationController?.hidesBarsOnSwipe = false
+  }
   
   @IBAction func searchButton(_ sender: Any) {
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -43,7 +53,6 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
   private func setUpNavigationBar() {
     navigationItem.leftBarButtonItem = UIImage(named: "movie_icon")?.createBarButtonItem()
-    navigationController?.hidesBarsOnSwipe = true
   }
   
   private func setupCollectionView() {
@@ -191,6 +200,10 @@ extension HomeViewController: UICollectionViewDelegate {
     case .banner:
       break
     case .popular:
+      let storyboard = UIStoryboard(name: "Main", bundle: nil)
+      if let detailViewController = storyboard.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController {
+        navigationController?.pushViewController(detailViewController, animated: true)
+      }
       break
     case .topRate:
       break

@@ -36,7 +36,7 @@ class SearchViewController: UIViewController {
 extension SearchViewController {
   
   private func setupSearchBar() {
-    let navigationSearchBar = NavigationSearchBar("검색하실 영화 제목을 입력해주세요.")
+    let navigationSearchBar = NavigationSearchBar("검색어를 입력해주세요.")
     navigationSearchBar.delegate = self
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: navigationSearchBar)
   }
