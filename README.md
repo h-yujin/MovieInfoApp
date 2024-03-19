@@ -18,7 +18,7 @@ TMDB에서 제공하는 API를 활용해 영화 관련 정보를 가져오는 �
 - UITableViewDiffableDataSource, UICollectionViewDiffableDataSource 이용한 UI 개발
 
 ## 학습내용
-- UICollectionViewDiffableDataSource를 사용하여 홈처럼 여러 Section,item이 있는 경우 기존 UICollectionViewDataSource보다
+- UICollectionViewDiffableDataSource를 사용하여 홈처럼 여러 Section,item이 있는 경우 기존 UICollectionViewDataSource보다 유연한 관리가 가능하다.
 - UITableViewDiffableDataSource를 사용하여 데이터 검색시 애니메이션을 통해 검색하고 있는 느낌을 주는 사용자 경험이 좋아졌다.   
 https://github.com/h-yujin/MovieInfoApp/assets/60815411/230c809e-6764-4c97-bf95-34eb66d356e6
 - MVVM을 통해 View와 ViewModel의 역할을 명확하게 나눠주니 확실히 ViewController의 역할이 명확해졌다.
